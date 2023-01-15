@@ -3,23 +3,11 @@ from enum import Enum
 from typing import Union
 from fastapi import FastAPI
 import json
-from modulefinder import ModuleFinder
-
-finder = ModuleFinder()
-finder.run_script('bacon.py')
-
-print('Loaded modules:')
-for name, mod in finder.modules.items():
-    print('%s: ' % name, end='')
-    print(','.join(list(mod.globalnames.keys())[:3]))
 
 # Imports for project
 import pandas as pd
 import numpy as np
-from os.path import exists
-import re
 import datatable as dt
-from tqdm import tqdm
 from files import *
 from functions import *
 
@@ -33,9 +21,9 @@ info  = dt.fread(file_info).to_pandas().set_index('id')
 youtube_urls = dt.fread(file_urls).to_pandas().set_index('id')
 
 # Only to test
-top_cosine_early_bert_blf_spectral_incp   = dt.fread(f_top_cosine_bert_blf_spectral_incp, header=True).to_pandas().set_index('index')
-top_cosine_early_bert_blf_spectral_resnet = dt.fread(f_top_cosine_bert_blf_spectral_resnet, header=True).to_pandas().set_index('index')
-top_cosine_early_bert_mfcc_bow_incp       = dt.fread(f_top_cosine_bert_mfcc_bow_incp, header=True).to_pandas().set_index('index')
+top_cosine_early_bert_blf_spectral_incp   = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_incp_complete.csv").set_index('index')
+top_cosine_early_bert_blf_spectral_resnet = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_resnet_complete.csv").set_index('index')
+top_cosine_early_bert_mfcc_bow_incp       = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_mfcc_bow_incp_complete.csv").set_index('index')
 
 
 class ModelName(str, Enum):
