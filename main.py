@@ -29,14 +29,11 @@ dtypes = {'index': 'str'} | dict(zip(range(100), ['int32' for i in range(100)]))
 top_cosine_bert_mfcc_bow_incp = pd.read_csv('./data/model_selected.csv', dtype=dtypes).set_index("index")
 
 class ModelName(str, Enum):
-    modelA = "early_bert_mfcc_bow_incp"
-
-class SimilarityFunction(Enum):
-    cosine = "cosine"  # "Cosine Similarity"
+    model = "model"
 
 
 topIdsFiles = {
-    "cosine_early_bert_blf_spectral_incp" : top_cosine_bert_mfcc_bow_incp,
+    "model" : top_cosine_bert_mfcc_bow_incp,
 }
 
 # import psutil
@@ -69,15 +66,15 @@ def read_root():
     return {"API": "MMSR"}
 
 @app.get("/query/")
-async def getTopResults(artist: str, track: str, top: int, model: ModelName, simFunction: SimilarityFunction):
-    print("\n\nGet Top results for \n\tArtist: ", artist, " \n\tTrack:",track, "\nUsing \n\tModel: ", model.name, "\n\tsimilarity function: ", simFunction.name, "\n\tTop: ", top)
+async def getTopResults(artist: str, track: str, top: int, model: ModelName):
+    print("\n\nGet Top results for \n\tArtist: ", artist, " \n\tTrack:",track, "\nUsing \n\tModel: ", model.name, "\n\tTop: ", top)
 
     id_song = getSongIdByQuery(artist, track, info)
     if id_song == None:
         return { "error" : "No record found for this query"}
     print("\nId song:", id_song)
 
-    file_id = simFunction.name + "_" + model
+    file_id = model.name
     print("file: ",file_id)
     if id_song in  topIdsFiles[file_id].index.values:
         print('\nQuery already in Top ids file for', file_id)
@@ -87,9 +84,9 @@ async def getTopResults(artist: str, track: str, top: int, model: ModelName, sim
     query_song = genres.loc[[id_song]].join(info, on="id").join(youtube_urls, on="id")
 
     top_n_ids = topIdsFiles[file_id].loc[id_song].values[:top]
-    print("Topids",top_n_ids)
+    # print("Topids",top_n_ids)
     ids = id_numbers.loc[top_n_ids].values.flatten()
-    print("ids", ids)
+    # print("ids", ids)
     topVal = genres.loc[ids].join(info, on="id").join(youtube_urls, on="id")
     
     # print(topIdsFiles[file_id].loc[[id_song]].apply(lambda s,ids : [ids.loc[x].values for x in s], raw=True, axis=1, ids=id_numbers))
