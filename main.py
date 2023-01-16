@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import numpy as np
 import datatable as dt
-from files import *
 from functions import *
+from files import *
 
 ## This version will only load the models precomputed
 
@@ -22,12 +22,14 @@ info  = dt.fread(file_info).to_pandas().set_index('id')
 youtube_urls = dt.fread(file_urls).to_pandas().set_index('id')
 id_numbers  = pd.read_csv('./data/relation_id_number.csv').set_index('idNumber')
 
+
+dtypes = {'index': 'str'} | dict(zip(range(100), ['int32' for i in range(100)]))
+
 # Only to test
-top_cosine_early_bert_blf_spectral_incp = pd.read_csv('./data/model_test.csv').set_index("index")
+top_cosine_early_bert_blf_spectral_incp = pd.read_csv('./data/model_test.csv', dtype=dtypes).set_index("index")
 # top_cosine_early_bert_blf_spectral_incp   = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_incp_complete.csv").set_index('index')
 # top_cosine_early_bert_blf_spectral_resnet = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_resnet_complete.csv").set_index('index')
 # top_cosine_early_bert_mfcc_bow_incp       = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_mfcc_bow_incp_complete.csv").set_index('index')
-
 
 class ModelName(str, Enum):
     modelA = "early_bert_blf_spectral_incp"
@@ -43,6 +45,12 @@ topIdsFiles = {
     # "cosine_early_bert_blf_spectral_resnet" : top_cosine_early_bert_blf_spectral_resnet,
     # "cosine_early_bert_mfcc_bow_incp" : top_cosine_early_bert_mfcc_bow_incp,  
 }
+
+# import psutil
+ 
+# Getting % usage of virtual_memory ( 3rd field)
+# print('RAM memory % used:', psutil.Process().memory_info().rss / (1024 * 1024))
+
 
 app = FastAPI()
 
