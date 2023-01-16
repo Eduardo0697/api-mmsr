@@ -19,9 +19,11 @@ print("Loading Models....")
 genres  = dt.fread(file_genres).to_pandas().set_index('id')
 info  = dt.fread(file_info).to_pandas().set_index('id')
 youtube_urls = dt.fread(file_urls).to_pandas().set_index('id')
+id_numbers  = pd.read_csv('./data/relation_id_number.csv').set_index('idNumber')
 
 # Only to test
-top_cosine_early_bert_blf_spectral_incp   = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_incp_complete.csv").set_index('index')
+top_cosine_early_bert_blf_spectral_incp = pd.read_csv('./data/model_test.csv').set_index("index")
+# top_cosine_early_bert_blf_spectral_incp   = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_incp_complete.csv").set_index('index')
 # top_cosine_early_bert_blf_spectral_resnet = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_resnet_complete.csv").set_index('index')
 # top_cosine_early_bert_mfcc_bow_incp       = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_mfcc_bow_incp_complete.csv").set_index('index')
 
@@ -66,10 +68,18 @@ async def getTopResults(artist: str, track: str, top: int, model: ModelName, sim
     query_song = genres.loc[[id_song]].join(info, on="id").join(youtube_urls, on="id")
 
     top_n_ids = topIdsFiles[file_id].loc[id_song].values[:top]
+    print("Topids",top_n_ids)
+    ids = id_numbers.loc[top_n_ids].values.flatten()
+    print("ids", ids)
+    topVal = genres.loc[ids].join(info, on="id").join(youtube_urls, on="id")
+    
+    # print(topIdsFiles[file_id].loc[[id_song]].apply(lambda s,ids : [ids.loc[x].values for x in s], raw=True, axis=1, ids=id_numbers))
 
-    topVal = genres.loc[top_n_ids].join(info, on="id").join(youtube_urls, on="id")
+    # pk, mrrk, ndcgk = getMetrics(topIdsFiles[file_id].loc[[id_song]], top, genres)
+    # print("MAP@"+str(top), pk, "MRR@"+str(top), mrrk, "Mean NDCG@"+str(top), ndcgk, "\n\n")
 
-    pk, mrrk, ndcgk = getMetrics(topIdsFiles[file_id].loc[[id_song]], top, genres)
-    print("MAP@"+str(top), pk, "MRR@"+str(top), mrrk, "Mean NDCG@"+str(top), ndcgk, "\n\n")
-
-    return { "song": json.loads(query_song.reset_index().to_json(orient='records')) , "top": json.loads(topVal.reset_index().to_json(orient='records'))  , "metrics" : { "MAP" : pk, "MRR" : mrrk, "NDCG" : ndcgk }  }
+    return { 
+        "song": json.loads(query_song.reset_index().to_json(orient='records')) , 
+        "top": json.loads(topVal.reset_index().to_json(orient='records'))  , 
+        # "metrics" : { "MAP" : pk, "MRR" : mrrk, "NDCG" : ndcgk } 
+         }
