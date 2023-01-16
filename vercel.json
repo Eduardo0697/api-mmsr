@@ -1,5 +1,5 @@
 {
-	"version": 1,
+	"version": 2,
 	"public": false,
 	"builds": [{ "src": "/server/api.py", "use": "@now/python" }],
 	"routes": [
