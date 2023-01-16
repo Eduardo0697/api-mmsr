@@ -26,24 +26,17 @@ id_numbers  = pd.read_csv('./data/relation_id_number.csv').set_index('idNumber')
 dtypes = {'index': 'str'} | dict(zip(range(100), ['int32' for i in range(100)]))
 
 # Only to test
-top_cosine_early_bert_blf_spectral_incp = pd.read_csv('./data/model_test.csv', dtype=dtypes).set_index("index")
-# top_cosine_early_bert_blf_spectral_incp   = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_incp_complete.csv").set_index('index')
-# top_cosine_early_bert_blf_spectral_resnet = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_blf_spectral_resnet_complete.csv").set_index('index')
-# top_cosine_early_bert_mfcc_bow_incp       = pd.read_csv("https://mmsr-data.s3.eu-central-1.amazonaws.com/top_ids_cosine_earlyfusion_bert_mfcc_bow_incp_complete.csv").set_index('index')
+top_cosine_bert_mfcc_bow_incp = pd.read_csv('./data/model_selected.csv', dtype=dtypes).set_index("index")
 
 class ModelName(str, Enum):
-    modelA = "early_bert_blf_spectral_incp"
-    # modelB = "early_bert_blf_spectral_resnet"
-    # modelC = "early_bert_mfcc_bow_incp" 
+    modelA = "early_bert_mfcc_bow_incp"
 
 class SimilarityFunction(Enum):
     cosine = "cosine"  # "Cosine Similarity"
-    # jaccard = "jaccard"  # "Jaccard Similarity"
+
 
 topIdsFiles = {
-    "cosine_early_bert_blf_spectral_incp" : top_cosine_early_bert_blf_spectral_incp,
-    # "cosine_early_bert_blf_spectral_resnet" : top_cosine_early_bert_blf_spectral_resnet,
-    # "cosine_early_bert_mfcc_bow_incp" : top_cosine_early_bert_mfcc_bow_incp,  
+    "cosine_early_bert_blf_spectral_incp" : top_cosine_bert_mfcc_bow_incp,
 }
 
 # import psutil
