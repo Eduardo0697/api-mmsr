@@ -16,7 +16,7 @@ def getSongIdByQuery(artist, track, info):
     return id_.index.values[0]
 
 
-def getMetrics(dfTopIds, topNumber, genres):
+def getMetrics(dfTopIds, topNumber, genres, id_numbers):
 
     RR = []
     AP_ = []
@@ -25,6 +25,7 @@ def getMetrics(dfTopIds, topNumber, genres):
     for queryId in tqdm(dfTopIds.index.values):
         
         topIds = dfTopIds.loc[queryId].values[:topNumber]
+        topIds = id_numbers.loc[topIds].values.flatten()
         querySongGenres = genres.loc[[queryId], 'genre'].values[0]
         topSongsGenres = genres.loc[topIds, 'genre'].values
         

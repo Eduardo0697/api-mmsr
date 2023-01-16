@@ -91,11 +91,11 @@ async def getTopResults(artist: str, track: str, top: int, model: ModelName):
     
     # print(topIdsFiles[file_id].loc[[id_song]].apply(lambda s,ids : [ids.loc[x].values for x in s], raw=True, axis=1, ids=id_numbers))
 
-    # pk, mrrk, ndcgk = getMetrics(topIdsFiles[file_id].loc[[id_song]], top, genres)
-    # print("MAP@"+str(top), pk, "MRR@"+str(top), mrrk, "Mean NDCG@"+str(top), ndcgk, "\n\n")
+    pk, mrrk, ndcgk = getMetrics(topIdsFiles[file_id].loc[[id_song]], top, genres, id_numbers)
+    print("MAP@"+str(top), pk, "MRR@"+str(top), mrrk, "Mean NDCG@"+str(top), ndcgk, "\n\n")
 
     return { 
         "song": json.loads(query_song.reset_index().to_json(orient='records')) , 
         "top": json.loads(topVal.reset_index().to_json(orient='records'))  , 
-        # "metrics" : { "MAP" : pk, "MRR" : mrrk, "NDCG" : ndcgk } 
+        "metrics" : { "MAP" : pk, "MRR" : mrrk, "NDCG" : ndcgk } 
          }
